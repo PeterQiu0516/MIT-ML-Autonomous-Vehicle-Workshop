@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+from os import system
+import rosbag, cv2, glob
+from sensor_msgs.msg import Image
+import numpy as np
+
+import argparse
+
+from cv_bridge import CvBridge
+
+
+# Make CvBridge object for converting ROS Image messages to OpenCV BGR arrays.
+bridge = CvBridge()
+
+
+# Parse command-line arguments.
+parser = argparse.ArgumentParser(description='Extract images and construct video from bag file.')
+parser.add_argument(
+    '--bagpath', type=str, 
+    help='path to bag file to load (default is most recent)', 
+    default='', dest='bagpath',
+)
+default_target_topic = 'camera/image'
+parser.add_argument(
+    '--target_topic', type=str, 
+    help='topic to extract (default is "%s")' % default_target_topic, 
+    default=default_target_topic, dest='target_topic',
+)
+args = parser.parse_args()
+target_topic = args.target_topic
+
+
+# Open the bag file.
+if args.bagpath == '':
+    bags = glob.glob('*.bag')
+    bags.sort()
+    bagpath = bags[-1]
+else:
+    bagpath = args.bagpath
+
+bag = rosbag.Bag(bagpath)
+topics = [
+    'driver_node/drivestate', 'camera/imgsvm', 'driver_node/cmd_vel', 'camera/image'
+]
+
+
+# Construct output paths.
+base_name = bagpath.replace('.bag', '-') + target_topic.replace('/', '_')
+vid_path = base_name + '.mp4'
+frame_path = base_name + '-frames'
+system('mkdir -p "%s"' % frame_path)
+print 'Reading %s from %s.' % (target_topic, bagpath)
+print 'Saving video to %s.' % vid_path
+print 'Saving frames to %s.' % frame_path
+
+
+
+# Iterate over messages.
+t0 = None
+
+framenum = -1
+times = []
+frames = []
+
+for topic, msg, t in bag.read_messages(topics=topics):
+
+    if topic == target_topic:
+        if t0 is None:
+            t0 = t
+        framenum += 1
+
+        t_sec = t.to_sec() - t0.to_sec()
+        times.append(t_sec)
+       
+        # Get a OpenCV image from the message.
+        img = bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
+        frames.append(img)
+
+print 'DT=%.2f seconds recorded.' % (times[-1] - times[0],)
+
+
+# Get the image size and make a video writer object.
+img = frames[-1]
+rate = 1./np.mean(np.diff(times))
+print 'Mean recorded framerate is %.1f FPS.' % rate
+height, width, channels = img.shape
+# This doesn't work. Not enough magic in the magic numbers, apparently.
+#fourcc = cv2.VideoWriter_fourcc(*'x264')
+# This magic number has more magic.
+fourcc = 0x00000021
+video = cv2.VideoWriter(vid_path, fourcc, rate, (width,height))
+
+
+# Write the frame to the video and to a PNG file.
+for framenum, img in enumerate(frames):
+        
+        video.write(img)
+        cv2.imwrite(frame_path + '/frame_%06d.png' % framenum, img)
+
+
+# Shut down.
+video.release()
+bag.close()

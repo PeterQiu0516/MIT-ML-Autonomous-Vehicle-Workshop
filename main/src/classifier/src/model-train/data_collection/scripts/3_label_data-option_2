@@ -1,0 +1,104 @@
+#!/usr/bin/env python
+import json, glob, os
+from glob import glob
+from pprint import pprint
+from PIL import Image
+import imageio
+
+import urllib2
+import numpy as np
+import matplotlib.pyplot as plt
+import tqdm
+
+IMAGE_HEIGHT = 96
+IMAGE_WIDTH = 128
+
+json_path = glob('*.json')[0]
+
+with open(json_path, 'r') as f:
+    data = json.loads(f.read())
+
+os.system('mkdir -p downloaded')
+LIMIT = 9999999
+for datum in data[:LIMIT]:
+    label = datum['Label']
+    sign_type = label['what_type_of_sign_is_present?']
+
+    if 'Sign' in label:
+        sign = label['Sign'][0]
+        x = [point['x'] for point in sign['geometry']]
+        y = [point['y'] for point in sign['geometry']]
+        r1 = min(y)
+        r2 = max(y)
+        c1 = min(x)
+        c2 = max(x)
+
+    elif sign_type == 'none':
+        r1 = np.random.randint(0, IMAGE_HEIGHT-50)
+        r2 = r1 + 50
+        c1 = np.random.randint(0, IMAGE_WIDTH-50)
+        c2 = c1 + 50
+
+    dx = c2-c1
+    dy = r2-r1
+
+    if dx != dy:
+        fc = np.random.choice([np.math.floor, np.math.ceil])
+        extra = abs(dx - dy)
+        a = int(fc(0.5*extra))
+        b = extra - a
+        if dx > dy:
+            r1 -= a
+            r2 += b
+        else:
+            c1 -= a
+            c2 += b
+
+    if r1 < 0:
+        d = -r1
+        r1 += d
+        r2 += d
+
+    if r2 >= IMAGE_HEIGHT:
+        d = r2 - IMAGE_HEIGHT + 1
+        r1 -= d
+        r2 -= d
+
+    if c1 < 0:
+        d = -c1
+        c1 += d
+        c2 += d
+
+    if c2 >= IMAGE_WIDTH:
+        d = c2 - IMAGE_WIDTH + 1
+        c1 -= d
+        c2 -= d
+
+    dx = c2-c1
+    dy = r2-r1
+
+    url = datum['Labeled Data']
+    downloaded = glob('downloaded/*.png')
+    fname = url.split('/')[-1]
+    target = 'downloaded/%s' % fname
+    if target not in downloaded:
+        print('Downloading to "%s".' % target)
+        os.system('wget --quiet "%s" -O "%s"' % (url, target))
+
+    image = imageio.imread(target)
+    image = image[r1:r2, c1:c2, ...]
+
+    savedir = '%s/%s' % (json_path.replace('.json', ''), sign_type)
+    os.system('mkdir -p "%s"' % savedir)
+    imageio.imwrite("%s/%s" % (savedir, fname), image)
+
+    # fig, ax = plt.subplots()
+    # ax.imshow(image)
+    # ax.set_title(sign_type)
+    # plt.show()
+
+
+    # image = Image.frombytes('RGBA', urllib2.urlopen(url))
+    # plt.imshow(np.array(image))
+    # plt.show()
+

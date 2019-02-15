@@ -1,0 +1,2 @@
+#!/bin/bash
+rosbag record driver_node/drivestate camera/imgsvm driver_node/cmd_vel camera/image
