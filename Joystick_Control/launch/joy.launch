@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  
+    <!-- joystick controller node -->
+    <include file="$(find joycontrol)/launch/joycontroller.launch"/>
+
+    <!-- Motor driver node -->
+    <include file="$(find drivemotor)/launch/motors.launch" />
+
+</launch>

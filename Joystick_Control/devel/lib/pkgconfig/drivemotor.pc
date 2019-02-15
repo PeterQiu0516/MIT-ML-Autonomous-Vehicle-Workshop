@@ -1,0 +1,8 @@
+prefix=/home/pi/robocar/exercises/ex-4-2-Joystick_Control/ros/devel
+
+Name: drivemotor
+Description: Description of drivemotor
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/pi/robocar/exercises/ex-4-2-Joystick_Control/ros/devel/lib 
+Requires: 

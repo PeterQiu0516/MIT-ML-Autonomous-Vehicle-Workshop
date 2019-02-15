@@ -1,0 +1,8 @@
+prefix=/home/pi/robocar/exercises/ex-4-2-Joystick_Control/ros/devel
+
+Name: joycontrol
+Description: Description of joycontrol
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/pi/robocar/exercises/ex-4-2-Joystick_Control/ros/devel/lib 
+Requires: geometry_msgs joy roscpp rospy sensor_msgs

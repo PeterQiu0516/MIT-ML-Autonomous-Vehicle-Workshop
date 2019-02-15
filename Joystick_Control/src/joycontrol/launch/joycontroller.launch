@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="joystick" default="true" />
+
+  <group ns="driver_node">
+
+  <!-- Load the Joystick node -->
+  <node respawn="true" pkg ="joy" type="joy_node" name="joy_node" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0.12" />
+  </node>
+
+  <!-- Load the Teleop node -->
+  <node pkg="joycontrol" name="joycontrol_node" type="joycontrol_node.py" output="screen">
+    <param name="max_linear_vel" value="0.2" />
+    <param name="max_angular_vel" value="1.5707" />
+  </node>
+
+  </group>
+
+</launch>
