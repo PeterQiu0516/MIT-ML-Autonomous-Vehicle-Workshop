@@ -1,8 +1,0 @@
-<launch>
-
-  <node pkg="classifier" name="classifier_node" type="clf_svm.py" output="screen">
-    <param name="svmModelFile" value="$(find classifier)/launch/model_svm.p" />
-    <param name="svmParamsFile" value="$(find classifier)/launch/svm_params.p" />
-  </node>
-
-</launch>
