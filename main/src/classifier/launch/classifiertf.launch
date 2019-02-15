@@ -1,0 +1,8 @@
+<launch>
+
+  <node pkg="classifier" name="classifier_node" type="clf_cnn.py" output="screen">
+    <param name="cnnModelFile" value="$(find classifier)/src/lenet.data-00000-of-00001" />
+    <param name="cnnGraphFile" value="$(find classifier)/src/lenet.meta" />
+  </node>
+
+</launch>

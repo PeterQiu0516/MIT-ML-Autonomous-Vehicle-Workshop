@@ -1,0 +1,15 @@
+
+<launch>
+    <!-- camera controller node -->
+    <include file="$(find camcontrol)/launch/cameracontrol.launch"/>
+
+    <!-- classifier node -->
+    <!--include file="$(find classifier)/launch/classifiersvm.launch"/-->
+    <include file="$(find classifier)/launch/classifiertf.launch"/>
+
+    <!-- Motor driver node -->
+    <include file="$(find drivemotor)/launch/motors.launch"/>
+
+    <!-- Display camera topic for debugging. -->
+    <include file="$(find viewsub)/launch/viewsub.launch"/>
+</launch>

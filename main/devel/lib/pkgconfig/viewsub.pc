@@ -1,0 +1,8 @@
+prefix=/home/pi/robocar/exercises/ex-10-1-Challenge/ros-ok/devel
+
+Name: viewsub
+Description: Description of viewsub
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/pi/robocar/exercises/ex-10-1-Challenge/ros-ok/devel/lib 
+Requires: 

@@ -1,0 +1,6 @@
+<launch>
+
+  <node pkg="drivemotor" name="drivermotor_node" type="drivemotor_node.py" output="screen">
+  </node>
+
+</launch>
