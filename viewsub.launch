@@ -1,5 +1,0 @@
-<launch>
-
-  <node pkg="viewsub" name="viewsub_node" type="img_show.py" output="screen" />
- 
-</launch>
