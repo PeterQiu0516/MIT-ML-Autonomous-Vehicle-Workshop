@@ -1,8 +1,0 @@
-<launch>
-
-  <node pkg="camcontrol" name="cameracontrol_node" type="camcontrol_node.py" output="screen">
-    <param name="svmModelFile" value="$(find camcontrol)/launch/model_svm.p" />
-    <param name="svmParamsFile" value="$(find camcontrol)/launch/svm_params.p" />
-  </node>
-
-</launch>
