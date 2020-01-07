@@ -1,3 +1,14 @@
 *.js linguist-language=python
 *.css linguist-language=python
 *.html linguist-language=python
+*.cmake linguist-language=python
+*.pc linguist-language=python
+*.bash linguist-language=python
+*.sh linguist-language=python
+*.zsh linguist-language=python
+*.xml linguist-language=python
+*.launch linguist-language=python
+*.p linguist-language=python
+*.pyc linguist-language=python
+*.index linguist-language=python
+*.meta linguist-language=python
